@@ -7,14 +7,23 @@ from tests.helpers import REDIS_URL, has, make_job
 RUN = bool(REDIS_URL) and has("redis")
 
 
+@unittest.skipUnless(has("redis"), "redis not installed")
+class TestMakeRedis(unittest.TestCase):
+    def test_read_timeout_exceeds_block_time(self):
+        from sift.queue.redis_streams import DEFAULT_BLOCK_MS, make_redis
+
+        kwargs = make_redis("rediss://default:pw@example.upstash.io:6379").connection_pool.connection_kwargs
+        self.assertGreater(kwargs["socket_timeout"], DEFAULT_BLOCK_MS / 1000 + 5)
+        self.assertEqual(kwargs["protocol"], 2)
+        self.assertTrue(kwargs["decode_responses"])
+
+
 @unittest.skipUnless(RUN, "SIFT_TEST_REDIS_URL not set")
 class TestRedisStreamQueue(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
-        from redis.asyncio import Redis
+        from sift.queue.redis_streams import RedisStreamQueue, make_redis
 
-        from sift.queue.redis_streams import RedisStreamQueue
-
-        self.redis = Redis.from_url(REDIS_URL, decode_responses=True)
+        self.redis = make_redis(REDIS_URL)
         self.prefix = f"test-{uuid.uuid4().hex}"
         self.make = lambda **kw: RedisStreamQueue(self.redis, prefix=self.prefix, **kw)
         self.q = self.make()

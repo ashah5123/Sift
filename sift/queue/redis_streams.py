@@ -25,6 +25,25 @@ return #due
 """
 
 GROUP = "workers"
+DEFAULT_BLOCK_MS = 5000
+
+
+def make_redis(url: str) -> Redis:
+    """Client settings for a queue that blocks on XREADGROUP.
+
+    The read timeout must be well above the XREADGROUP block time, or every idle
+    wait fails with TimeoutError (redis-py defaults both to 5s). The health check
+    and keepalive recover connections that hosted Redis closes while idle.
+    """
+    return Redis.from_url(
+        url,
+        decode_responses=True,
+        protocol=2,
+        socket_timeout=DEFAULT_BLOCK_MS / 1000 + 25,
+        socket_connect_timeout=10,
+        socket_keepalive=True,
+        health_check_interval=30,
+    )
 
 
 class RedisStreamQueue:
@@ -67,7 +86,9 @@ class RedisStreamQueue:
             raise
         return True
 
-    async def read(self, consumer: str, count: int = 10, block_ms: int = 5000) -> list[tuple[str, Job]]:
+    async def read(
+        self, consumer: str, count: int = 10, block_ms: int = DEFAULT_BLOCK_MS
+    ) -> list[tuple[str, Job]]:
         await self.r.eval(_PROMOTE_DUE, 2, self.retry_key, self.stream, str(time.time()), str(self.maxlen))
 
         claimed = await self.r.xautoclaim(

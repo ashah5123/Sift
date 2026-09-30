@@ -71,15 +71,13 @@ async def worker_loop(
 
 
 async def main() -> None:
-    from redis.asyncio import Redis
-
     from sift.config import Settings
     from sift.db import create_pool
-    from sift.queue.redis_streams import RedisStreamQueue
+    from sift.queue.redis_streams import RedisStreamQueue, make_redis
     from sift.store.postgres import PostgresStore
 
     settings = Settings.from_env()
-    redis = Redis.from_url(settings.redis_url, decode_responses=True)
+    redis = make_redis(settings.redis_url)
     queue = RedisStreamQueue(redis)
     await queue.setup()
     pool = await create_pool(settings.database_url)

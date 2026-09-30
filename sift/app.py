@@ -26,11 +26,9 @@ def create_app(settings: Settings, queue: JobQueue | None = None) -> FastAPI:
             app.state.queue = queue
             yield
             return
-        from redis.asyncio import Redis
+        from sift.queue.redis_streams import RedisStreamQueue, make_redis
 
-        from sift.queue.redis_streams import RedisStreamQueue
-
-        redis = Redis.from_url(settings.redis_url, decode_responses=True)
+        redis = make_redis(settings.redis_url)
         app.state.queue = RedisStreamQueue(redis)
         await app.state.queue.setup()
         pool = worker = None
