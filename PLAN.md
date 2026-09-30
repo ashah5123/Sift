@@ -21,8 +21,8 @@ Dashboard (React) reads decisions + corrections
 
 ### Phase 0 - Repo and skeleton (day 1)
 - [x] Private GitHub repo, Python project, `.env.example`
-- [ ] Core types, `JevClient` protocol, `MockJev`, policy (act/suggest/silent)
-- [ ] CI: lint + tests on push
+- [x] Core types, `JevClient` protocol, `MockJev`, policy (act/suggest/silent)
+- [x] CI: compile check + tests on push
 - **Done when:** `python -m unittest` passes on a clean clone.
 
 ### Phase 1 - GitHub App + ingestion (week 1)
