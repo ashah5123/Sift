@@ -35,10 +35,11 @@ Dashboard (React) reads decisions + corrections
 - **Done when:** opening an issue on a test repo stores a row exactly once, even if the delivery is replayed.
 
 ### Phase 2 - Backtest harness (week 1-2)
-- [ ] Loader: pull issues from 2-3 big repos (FastAPI, VS Code, React) to JSONL, with ground truth (duplicate label / "Duplicate of #N", human labels)
-- [ ] Time-ordered replay with an as-of pool
-- [ ] Metrics: duplicate precision/recall@k, label accuracy, false-action rate, latency, cost per 1k issues
-- [ ] Baselines: embeddings-only, Jaccard
+- [x] Loader: pull issues from big repos (React, VS Code) to JSONL, with ground truth (duplicate label / "Duplicate of #N", human labels). FastAPI dropped: it moved issues to Discussions and has almost no marked duplicates.
+- [x] Time-ordered replay with an as-of pool
+- [x] Metrics: duplicate precision/recall@k, label accuracy, false-action rate, latency, cost per 1k issues
+- [x] Baselines: Jaccard, TF-IDF with template stripping (embeddings baseline moves to Phase 3)
+- [ ] Hand-label a sample of flagged "false" duplicates to measure true precision (ground truth misses unmarked duplicates)
 - **Done when:** `python -m sift.backtest run --repo fastapi/fastapi --detector jaccard` prints a metrics table.
 
 ### Phase 3 - Duplicate detection (week 2-3)

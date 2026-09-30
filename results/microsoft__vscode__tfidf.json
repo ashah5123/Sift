@@ -1,0 +1,89 @@
+{
+  "repo": "microsoft/vscode",
+  "detector": "tfidf",
+  "evaluated": 4000,
+  "unverifiable_duplicates": 326,
+  "duplicates": {
+    "scored_issues": 3674,
+    "known_duplicates": 50,
+    "recall_at_10": 0.38,
+    "sweep": [
+      {
+        "threshold": 0.1,
+        "flagged": 3320,
+        "precision": 0.002710843373493976,
+        "recall": 0.18,
+        "false_action_rate": 0.9011976047904192
+      },
+      {
+        "threshold": 0.2,
+        "flagged": 1285,
+        "precision": 0.004669260700389105,
+        "recall": 0.12,
+        "false_action_rate": 0.34812193794229723
+      },
+      {
+        "threshold": 0.3,
+        "flagged": 518,
+        "precision": 0.009652509652509652,
+        "recall": 0.1,
+        "false_action_rate": 0.13962983124659772
+      },
+      {
+        "threshold": 0.4,
+        "flagged": 204,
+        "precision": 0.014705882352941176,
+        "recall": 0.06,
+        "false_action_rate": 0.05470876428960261
+      },
+      {
+        "threshold": 0.5,
+        "flagged": 132,
+        "precision": 0.007575757575757576,
+        "recall": 0.02,
+        "false_action_rate": 0.035655960805661406
+      },
+      {
+        "threshold": 0.6,
+        "flagged": 82,
+        "precision": 0.012195121951219513,
+        "recall": 0.02,
+        "false_action_rate": 0.022046815459989114
+      },
+      {
+        "threshold": 0.7,
+        "flagged": 58,
+        "precision": 0.017241379310344827,
+        "recall": 0.02,
+        "false_action_rate": 0.015514425694066412
+      },
+      {
+        "threshold": 0.8,
+        "flagged": 36,
+        "precision": 0.027777777777777776,
+        "recall": 0.02,
+        "false_action_rate": 0.009526401741970605
+      },
+      {
+        "threshold": 0.9,
+        "flagged": 23,
+        "precision": 0.043478260869565216,
+        "recall": 0.02,
+        "false_action_rate": 0.005988023952095809
+      }
+    ]
+  },
+  "labels": {
+    "labeled_issues": 1644,
+    "coverage": 0.8643552311435523,
+    "accuracy_when_answered": 0.10344827586206896,
+    "accuracy_overall": 0.08941605839416059,
+    "most_frequent_baseline": 0.3838199513381995
+  },
+  "latency_ms": {
+    "p50": 1.215770491398871,
+    "p95": 3.429125063121319
+  },
+  "tokens_per_issue": 0.0,
+  "est_cost_per_1k_issues_usd": 0.0
+}
