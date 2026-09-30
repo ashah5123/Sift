@@ -11,12 +11,37 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.11", "3.12", "3.13"]
+
+    services:
+      redis:
+        image: redis:7
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: sift_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+
+    env:
+      SIFT_TEST_REDIS_URL: redis://localhost:6379/0
+      SIFT_TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/sift_test
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install
+        run: pip install -e .
       - name: Compile check
         run: python -m compileall -q sift tests
-      - name: Unit tests
+      - name: Tests
         run: python -m unittest discover -v

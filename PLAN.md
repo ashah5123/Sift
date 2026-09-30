@@ -26,11 +26,12 @@ Dashboard (React) reads decisions + corrections
 - **Done when:** `python -m unittest` passes on a clean clone.
 
 ### Phase 1 - GitHub App + ingestion (week 1)
-- [ ] Register GitHub App (issues/PR read+write, webhooks); install on own repos
-- [ ] `POST /webhook`: verify `X-Hub-Signature-256`, dedupe on `X-GitHub-Delivery`, enqueue to Redis Stream
-- [ ] Worker with consumer group, retries with backoff, dead-letter stream
-- [ ] Installation-token auth (JWT -> token), rate-limit handling (`Retry-After`, secondary limits)
-- [ ] Postgres schema (`sift/db/schema.sql`), store issues
+- [ ] Register GitHub App (issues/PR read+write, webhooks); install on own repos — see `docs/github-app-setup.md`
+- [x] `POST /webhook`: verify `X-Hub-Signature-256`, dedupe on `X-GitHub-Delivery`, enqueue to Redis Stream
+- [x] Worker with consumer group, retries with backoff, dead-letter stream
+- [x] Installation-token auth (JWT -> token), rate-limit handling (`Retry-After`, secondary limits)
+- [x] Postgres schema (`sift/db/schema.sql`), store issues
+- [ ] Deploy webhook + worker to a free host and verify end to end
 - **Done when:** opening an issue on a test repo stores a row exactly once, even if the delivery is replayed.
 
 ### Phase 2 - Backtest harness (week 1-2)
