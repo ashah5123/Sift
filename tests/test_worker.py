@@ -1,8 +1,10 @@
+import asyncio
 import unittest
+from unittest.mock import AsyncMock, patch
 
 from sift.queue import InMemoryQueue
 from sift.store import InMemoryStore
-from sift.worker import MAX_ATTEMPTS, backoff, run_once
+from sift.worker import MAX_ATTEMPTS, backoff, run_once, worker_loop
 from tests.helpers import make_job
 
 
@@ -70,6 +72,35 @@ class TestWorker(unittest.IsolatedAsyncioTestCase):
         job, error = self.queue.dead[0]
         self.assertEqual(job.attempts, MAX_ATTEMPTS - 1)
         self.assertIn("boom", error)
+
+    async def test_worker_loop_processes_until_stopped(self):
+        stop = asyncio.Event()
+        await self.queue.enqueue(make_job("d1"))
+
+        async def handler_then_stop(job, store):
+            await store.apply(job)
+            stop.set()
+
+        async def run_once_patched(*args, **kwargs):
+            return await run_once(*args, handler=handler_then_stop, **kwargs)
+
+        with patch("sift.worker.run_once", run_once_patched):
+            await asyncio.wait_for(worker_loop(self.queue, self.store, "c1", stop, block_ms=0), 2)
+        self.assertIn(("owner/repo", 7), self.store.issues)
+
+    async def test_worker_loop_survives_errors(self):
+        stop = asyncio.Event()
+        calls = []
+
+        async def broken_run_once(*args, **kwargs):
+            calls.append(1)
+            if len(calls) == 2:
+                stop.set()
+            raise ConnectionError("redis down")
+
+        with patch("sift.worker.run_once", broken_run_once), patch("sift.worker.asyncio.sleep", AsyncMock()):
+            await asyncio.wait_for(worker_loop(self.queue, self.store, "c1", stop), 2)
+        self.assertEqual(len(calls), 2)
 
     def test_backoff_is_capped(self):
         self.assertEqual(backoff(0), 5.0)

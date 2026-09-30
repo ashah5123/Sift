@@ -1,5 +1,11 @@
-"""Webhook receiver: uvicorn sift.app:app_factory --factory"""
+"""Webhook receiver: uvicorn sift.app:app_factory --factory
+
+With RUN_WORKER=1 the queue consumer runs in the same process, so a single
+free-tier web service is enough.
+"""
+import asyncio
 import json
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Header, HTTPException, Request
@@ -27,9 +33,25 @@ def create_app(settings: Settings, queue: JobQueue | None = None) -> FastAPI:
         redis = Redis.from_url(settings.redis_url, decode_responses=True)
         app.state.queue = RedisStreamQueue(redis)
         await app.state.queue.setup()
+        pool = worker = None
+        stop = asyncio.Event()
+        if settings.run_worker:
+            from sift.db import create_pool
+            from sift.store.postgres import PostgresStore
+            from sift.worker import consumer_name, worker_loop
+
+            pool = await create_pool(settings.database_url, max_size=3)
+            worker = asyncio.create_task(
+                worker_loop(app.state.queue, PostgresStore(pool), consumer_name(), stop)
+            )
         try:
             yield
         finally:
+            stop.set()
+            if worker is not None:
+                await worker
+            if pool is not None:
+                await pool.close()
             await redis.aclose()
 
     app = FastAPI(title="Sift", lifespan=lifespan)
@@ -65,4 +87,5 @@ def create_app(settings: Settings, queue: JobQueue | None = None) -> FastAPI:
 
 
 def app_factory() -> FastAPI:
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     return create_app(Settings.from_env())

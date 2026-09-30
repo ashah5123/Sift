@@ -12,6 +12,7 @@ class Settings:
     redis_url: str = "redis://localhost:6379/0"
     database_url: str = ""
     jev_backend: str = "mock"
+    run_worker: bool = False  # run the queue consumer inside the web process
 
     @classmethod
     def from_env(cls, env: Mapping[str, str] = os.environ) -> "Settings":
@@ -26,4 +27,5 @@ class Settings:
             redis_url=env.get("REDIS_URL", cls.redis_url),
             database_url=env.get("DATABASE_URL", ""),
             jev_backend=env.get("JEV_BACKEND", "mock"),
+            run_worker=env.get("RUN_WORKER", "").lower() in {"1", "true", "yes"},
         )

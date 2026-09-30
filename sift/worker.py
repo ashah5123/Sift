@@ -52,11 +52,29 @@ async def run_once(
     return len(messages)
 
 
+def consumer_name() -> str:
+    return f"{socket.gethostname()}-{os.getpid()}"
+
+
+async def worker_loop(
+    queue: JobQueue, store: IssueStore, consumer: str, stop: asyncio.Event, block_ms: int = 5000
+) -> None:
+    """Consume until `stop` is set. Errors reaching Redis are logged, not fatal."""
+    log.info("worker %s started", consumer)
+    while not stop.is_set():
+        try:
+            await run_once(queue, store, consumer, block_ms=block_ms)
+        except Exception:
+            log.exception("worker loop error; retrying in 1s")
+            await asyncio.sleep(1)
+    log.info("worker %s stopped", consumer)
+
+
 async def main() -> None:
-    import asyncpg
     from redis.asyncio import Redis
 
     from sift.config import Settings
+    from sift.db import create_pool
     from sift.queue.redis_streams import RedisStreamQueue
     from sift.store.postgres import PostgresStore
 
@@ -64,23 +82,17 @@ async def main() -> None:
     redis = Redis.from_url(settings.redis_url, decode_responses=True)
     queue = RedisStreamQueue(redis)
     await queue.setup()
-    pool = await asyncpg.create_pool(settings.database_url, min_size=1, max_size=5)
-    store = PostgresStore(pool)
+    pool = await create_pool(settings.database_url)
 
-    consumer = f"{socket.gethostname()}-{os.getpid()}"
     stop = asyncio.Event()
     loop = asyncio.get_running_loop()
     for sig in (signal.SIGINT, signal.SIGTERM):
         loop.add_signal_handler(sig, stop.set)
-
-    log.info("worker %s started", consumer)
     try:
-        while not stop.is_set():
-            await run_once(queue, store, consumer)
+        await worker_loop(queue, PostgresStore(pool), consumer_name(), stop)
     finally:
         await pool.close()
         await redis.aclose()
-        log.info("worker %s stopped", consumer)
 
 
 if __name__ == "__main__":
