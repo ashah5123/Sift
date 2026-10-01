@@ -1,0 +1,512 @@
+{
+  "repo": "microsoft/vscode",
+  "detector": "tfidf",
+  "threshold": 0.5,
+  "seed": 0,
+  "flagged": 132,
+  "marked_correct": 1,
+  "wrong_flags": 131,
+  "sample": [
+    {
+      "issue": 331678,
+      "candidate": 331677,
+      "confidence": 0.664,
+      "marked_original": null,
+      "issue_title": "Add local timestamps to Copilot Chat diagnostics files for improved traceability",
+      "candidate_title": "Add local timestamps to Agent Host network diagnostics files for traceability",
+      "verdict": "no",
+      "note": "same template, different features (Copilot diagnostics vs Agent Host network)"
+    },
+    {
+      "issue": 331718,
+      "candidate": 331717,
+      "confidence": 0.8998,
+      "marked_original": null,
+      "issue_title": "Support auto model selection in .agent.md based on task complexity",
+      "candidate_title": "Support auto model selection in .agent.md based on task complexity",
+      "verdict": "yes",
+      "note": "same request reposted"
+    },
+    {
+      "issue": 331922,
+      "candidate": 331284,
+      "confidence": 0.7462,
+      "marked_original": null,
+      "issue_title": "Mdos",
+      "candidate_title": "report",
+      "verdict": "no",
+      "note": "both empty templates, nothing in common"
+    },
+    {
+      "issue": 332156,
+      "candidate": 332155,
+      "confidence": 0.9604,
+      "marked_original": null,
+      "issue_title": "chat",
+      "candidate_title": "chat",
+      "verdict": "yes",
+      "note": "same 'reading bind' error, same machine, reposted"
+    },
+    {
+      "issue": 332158,
+      "candidate": 332157,
+      "confidence": 0.8347,
+      "marked_original": null,
+      "issue_title": "Test: Skills Support in Multi-root window in Editor Window for Copilot Harness",
+      "candidate_title": "Test: Custom Agents Support in Multi-root window in Editor Window for Copilot Harness",
+      "verdict": "no",
+      "note": "different test plan items (skills vs custom agents)"
+    },
+    {
+      "issue": 332618,
+      "candidate": 332617,
+      "confidence": 0.594,
+      "marked_original": null,
+      "issue_title": "Markdown preview emits duplicate heading ids when a heading matches a generated suffix",
+      "candidate_title": "Notebook markdown renderer emits duplicate heading ids",
+      "verdict": "no",
+      "note": "same bug pattern in two separate code paths (preview vs notebook renderer)"
+    },
+    {
+      "issue": 332701,
+      "candidate": 332678,
+      "confidence": 0.5735,
+      "marked_original": 332693,
+      "issue_title": "Problem opening solution on remote linux ubuntu server",
+      "candidate_title": "ssh remote插件问题",
+      "verdict": "unsure",
+      "note": "both SSH remote connection failures; logs truncated, cause unclear"
+    },
+    {
+      "issue": 332905,
+      "candidate": 332896,
+      "confidence": 0.7362,
+      "marked_original": null,
+      "issue_title": "Claude (Agent Host) skills not loaded when returning to session",
+      "candidate_title": "Claude plugins not loading skills correctly",
+      "verdict": "no",
+      "note": "different Claude skills bugs (session switch vs plugin skills)"
+    },
+    {
+      "issue": 332919,
+      "candidate": 332881,
+      "confidence": 0.7053,
+      "marked_original": null,
+      "issue_title": "Agents Window: Better skill set configuration for a workspace",
+      "candidate_title": "Agents Window: \"Commit Changes\" is not always available",
+      "verdict": "no",
+      "note": "different feature requests"
+    },
+    {
+      "issue": 333106,
+      "candidate": 333104,
+      "confidence": 0.6249,
+      "marked_original": null,
+      "issue_title": "vscode always uses Windows version of mcp.json even when connected to WSL",
+      "candidate_title": "Agents window doesn't show MCP servers when using WSL",
+      "verdict": "no",
+      "note": "different WSL MCP problems (config location vs missing UI)"
+    },
+    {
+      "issue": 333267,
+      "candidate": 333266,
+      "confidence": 0.5442,
+      "marked_original": null,
+      "issue_title": "Support semantic search in the Copilot Harness",
+      "candidate_title": "Support for Auto Tiers",
+      "verdict": "no",
+      "note": "different work items"
+    },
+    {
+      "issue": 333330,
+      "candidate": 333329,
+      "confidence": 1.0,
+      "marked_original": null,
+      "issue_title": "https://google.com",
+      "candidate_title": "https://google.com",
+      "verdict": "yes",
+      "note": "identical spam repost"
+    },
+    {
+      "issue": 333425,
+      "candidate": 331916,
+      "confidence": 0.9752,
+      "marked_original": null,
+      "issue_title": "1.136.0 Endgame",
+      "candidate_title": "1.135.0 Endgame",
+      "verdict": "no",
+      "note": "different milestone endgames"
+    },
+    {
+      "issue": 333459,
+      "candidate": 333458,
+      "confidence": 0.6384,
+      "marked_original": null,
+      "issue_title": "Report issue window asked for confirmation before closing window",
+      "candidate_title": "Terminal doesn't focus if you click the blank space below a copilot terminal widget",
+      "verdict": "no",
+      "note": "different bugs from same reporter"
+    },
+    {
+      "issue": 333723,
+      "candidate": 333722,
+      "confidence": 0.7781,
+      "marked_original": null,
+      "issue_title": "Automations with Autopilot no longer get Assisted Permissions",
+      "candidate_title": "Report Issues doesn't show editor while in Automations",
+      "verdict": "no",
+      "note": "different bugs from same reporter"
+    },
+    {
+      "issue": 333978,
+      "candidate": 333106,
+      "confidence": 0.6916,
+      "marked_original": null,
+      "issue_title": "Chat / Agents: Git ignored files cannot be referenced in the chat or agents",
+      "candidate_title": "vscode always uses Windows version of mcp.json even when connected to WSL",
+      "verdict": "no",
+      "note": "different bugs from same reporter"
+    },
+    {
+      "issue": 334731,
+      "candidate": 332154,
+      "confidence": 0.7365,
+      "marked_original": null,
+      "issue_title": "my work is not savng",
+      "candidate_title": "rate limit issue",
+      "verdict": "no",
+      "note": "empty templates, different titles"
+    },
+    {
+      "issue": 334786,
+      "candidate": 334785,
+      "confidence": 0.5512,
+      "marked_original": null,
+      "issue_title": "Scrollbar slider thumb becomes nearly invisible at the bottom edge of webview editor tabs in Light Mode (macOS)",
+      "candidate_title": "No icons of both SVN and CaludeCode on the left sidebarSin",
+      "verdict": "no",
+      "note": "different UI bugs"
+    },
+    {
+      "issue": 334899,
+      "candidate": 334887,
+      "confidence": 0.6147,
+      "marked_original": null,
+      "issue_title": "Agents window: PR changes not updated",
+      "candidate_title": "Duplicate entries in Agent drop-down",
+      "verdict": "no",
+      "note": "different Agents Window bugs"
+    },
+    {
+      "issue": 334901,
+      "candidate": 334887,
+      "confidence": 0.6826,
+      "marked_original": null,
+      "issue_title": "Review comments clipped in multi-file diff editor",
+      "candidate_title": "Duplicate entries in Agent drop-down",
+      "verdict": "no",
+      "note": "different Agents Window bugs"
+    },
+    {
+      "issue": 334920,
+      "candidate": 334916,
+      "confidence": 0.8355,
+      "marked_original": null,
+      "issue_title": "Skills in workspace not found",
+      "candidate_title": "Claude: skills not found when added after the session starts",
+      "verdict": "no",
+      "note": "different harnesses and triggers (Codex workspace skill vs Claude mid-session)"
+    },
+    {
+      "issue": 334996,
+      "candidate": 334995,
+      "confidence": 1.0,
+      "marked_original": null,
+      "issue_title": "Chrome",
+      "candidate_title": "Chrome",
+      "verdict": "yes",
+      "note": "identical repost"
+    },
+    {
+      "issue": 335084,
+      "candidate": 335082,
+      "confidence": 0.7074,
+      "marked_original": null,
+      "issue_title": "Replacement for #13909",
+      "candidate_title": "Over head",
+      "verdict": "no",
+      "note": "spam"
+    },
+    {
+      "issue": 335118,
+      "candidate": 335115,
+      "confidence": 0.5838,
+      "marked_original": null,
+      "issue_title": "Webview resource path containment bypass",
+      "candidate_title": "Webview resource path containment bypass",
+      "verdict": "yes",
+      "note": "same CVE advisory filed twice"
+    },
+    {
+      "issue": 335310,
+      "candidate": 335309,
+      "confidence": 1.0,
+      "marked_original": null,
+      "issue_title": "https://insiders.vscode.dev",
+      "candidate_title": "https://insiders.vscode.dev",
+      "verdict": "yes",
+      "note": "identical repost"
+    },
+    {
+      "issue": 335313,
+      "candidate": 335312,
+      "confidence": 0.9748,
+      "marked_original": null,
+      "issue_title": "https://github.com/microsoft/vscode/issues/new?template=bug_report.md",
+      "candidate_title": "https://github.com/microsoft/vscode/issues/new?template=bug_report.md",
+      "verdict": "yes",
+      "note": "identical repost"
+    },
+    {
+      "issue": 335529,
+      "candidate": 334457,
+      "confidence": 0.5258,
+      "marked_original": null,
+      "issue_title": "Test: Convert a Codex Quick Chat into a workspace session",
+      "candidate_title": "Test: Convert a workspace-less Quick Chat into a workspace session",
+      "verdict": "no",
+      "note": "Codex-specific test plan item vs generic one"
+    },
+    {
+      "issue": 335723,
+      "candidate": 332996,
+      "confidence": 0.8292,
+      "marked_original": null,
+      "issue_title": "d",
+      "candidate_title": "1..",
+      "verdict": "no",
+      "note": "empty templates"
+    },
+    {
+      "issue": 335781,
+      "candidate": 335777,
+      "confidence": 0.8512,
+      "marked_original": null,
+      "issue_title": "Copilot Agent: If a agent creates a new session with create_session the new session should be aware of the parent session",
+      "candidate_title": "Copilot Agent: In create_session with worktree: true allow to set the base branch",
+      "verdict": "no",
+      "note": "different feature requests"
+    },
+    {
+      "issue": 335834,
+      "candidate": 335832,
+      "confidence": 0.5312,
+      "marked_original": null,
+      "issue_title": "Inconsistent inheritance",
+      "candidate_title": "No UI toggle for wordwrap in session editors",
+      "verdict": "no",
+      "note": "different findings while verifying one feature"
+    },
+    {
+      "issue": 335838,
+      "candidate": 335228,
+      "confidence": 0.5519,
+      "marked_original": null,
+      "issue_title": "[testplan-item] Support configurable word wrap in Agents editors",
+      "candidate_title": "Support configurable word wrap in Agents editors",
+      "verdict": "no",
+      "note": "test plan item for the feature request, not a duplicate"
+    },
+    {
+      "issue": 335896,
+      "candidate": 335877,
+      "confidence": 0.541,
+      "marked_original": null,
+      "issue_title": "Test: Rich GitHub reference previews in chat pills",
+      "candidate_title": "Test: Preserve recorded GitHub titles in issue and pull-request pills",
+      "verdict": "no",
+      "note": "different test plan items"
+    },
+    {
+      "issue": 336036,
+      "candidate": 335723,
+      "confidence": 0.5453,
+      "marked_original": null,
+      "issue_title": "GitHub Classroom \"Companion Repository\" or Bot Not Loading",
+      "candidate_title": "d",
+      "verdict": "no",
+      "note": "empty templates"
+    },
+    {
+      "issue": 336104,
+      "candidate": 332996,
+      "confidence": 0.6446,
+      "marked_original": null,
+      "issue_title": "Github wont respond to companion",
+      "candidate_title": "1..",
+      "verdict": "no",
+      "note": "empty templates"
+    },
+    {
+      "issue": 336535,
+      "candidate": 336390,
+      "confidence": 0.5032,
+      "marked_original": null,
+      "issue_title": "Very high CPU usage with all extensions disabled unless \"Disable AI features\" is enabled",
+      "candidate_title": "Expanded Codex support in the agent host does not work",
+      "verdict": "no",
+      "note": "different bugs"
+    },
+    {
+      "issue": 336675,
+      "candidate": 332865,
+      "confidence": 0.5954,
+      "marked_original": null,
+      "issue_title": "not my account",
+      "candidate_title": "IDENTIDQDE",
+      "verdict": "no",
+      "note": "empty templates"
+    },
+    {
+      "issue": 336714,
+      "candidate": 336713,
+      "confidence": 0.7395,
+      "marked_original": null,
+      "issue_title": "\"Create New Project With Copilot\" when all AI features should be turned off",
+      "candidate_title": "Explorer doesn't show my files when first opening VS Code",
+      "verdict": "no",
+      "note": "different bugs"
+    },
+    {
+      "issue": 336784,
+      "candidate": 336783,
+      "confidence": 0.9976,
+      "marked_original": null,
+      "issue_title": "MCP migration warning should identify unsupported servers",
+      "candidate_title": "MCP migration warning should identify unsupported servers",
+      "verdict": "yes",
+      "note": "identical repost"
+    },
+    {
+      "issue": 336841,
+      "candidate": 336831,
+      "confidence": 0.7608,
+      "marked_original": null,
+      "issue_title": "MCP: initialized notification is not ordered before the first request, breaking stateful Streamable HTTP servers intermittently",
+      "candidate_title": "MCP: notifications/initialized is not awaited before the first request, so stateful Streamable HTTP servers intermittently reject the connection",
+      "verdict": "yes",
+      "note": "same MCP notifications/initialized race"
+    },
+    {
+      "issue": 336918,
+      "candidate": 333417,
+      "confidence": 0.5221,
+      "marked_original": null,
+      "issue_title": "Chat: bare URLs are linkified together with the text that directly follows them",
+      "candidate_title": "Long command line incomplete in \"Send to terminal\" dialog",
+      "verdict": "no",
+      "note": "different chat rendering bugs"
+    },
+    {
+      "issue": 337196,
+      "candidate": 337021,
+      "confidence": 0.5109,
+      "marked_original": null,
+      "issue_title": "Windows 11 + NVIDIA RTX 4090 + AOC Q27G10E2: Monitor black screen caused by MPO (Multi-Plane Overlay), resolved by disabling MPO",
+      "candidate_title": "Primary monitor intermittently goes black on Windows 11 with VS Code 1.138.0, fixed by --disable-direct-composition",
+      "verdict": "yes",
+      "note": "same AOC monitor black-screen, follow-up by same reporter"
+    },
+    {
+      "issue": 337319,
+      "candidate": 337318,
+      "confidence": 0.9987,
+      "marked_original": null,
+      "issue_title": "Update agent prompts and skills for creating MCP configurations",
+      "candidate_title": "Update agent prompts and skills for creating MCP configurations",
+      "verdict": "yes",
+      "note": "identical repost"
+    },
+    {
+      "issue": 337434,
+      "candidate": 337432,
+      "confidence": 0.8395,
+      "marked_original": null,
+      "issue_title": "Command + click feature",
+      "candidate_title": "Command click isn't working",
+      "verdict": "yes",
+      "note": "same cmd+click import path issue, same reporter"
+    },
+    {
+      "issue": 337862,
+      "candidate": 337860,
+      "confidence": 0.9838,
+      "marked_original": null,
+      "issue_title": "Installation error for V-1.139.0",
+      "candidate_title": "Installation error for V-1.139.0",
+      "verdict": "yes",
+      "note": "same KaTeX font copy error on install"
+    },
+    {
+      "issue": 338186,
+      "candidate": 331314,
+      "confidence": 0.7771,
+      "marked_original": null,
+      "issue_title": "Vs code is opening very slow. taking 5-7 seconds to open",
+      "candidate_title": "ㄅ",
+      "verdict": "no",
+      "note": "empty perf templates"
+    },
+    {
+      "issue": 338284,
+      "candidate": 338283,
+      "confidence": 1.0,
+      "marked_original": null,
+      "issue_title": "Agent Host default chat can remain archived after session unarchive",
+      "candidate_title": "Agent Host default chat can remain archived after session unarchive",
+      "verdict": "yes",
+      "note": "identical repost"
+    },
+    {
+      "issue": 338286,
+      "candidate": 337430,
+      "confidence": 0.6353,
+      "marked_original": null,
+      "issue_title": "agentDebugLog option does not exist",
+      "candidate_title": "The keep / undo UX is gone",
+      "verdict": "no",
+      "note": "different bugs"
+    },
+    {
+      "issue": 338386,
+      "candidate": 338385,
+      "confidence": 0.6123,
+      "marked_original": null,
+      "issue_title": "Right-align numbers in the result grid",
+      "candidate_title": "Show SPID in Statusbar",
+      "verdict": "no",
+      "note": "different feature requests"
+    },
+    {
+      "issue": 338534,
+      "candidate": 338533,
+      "confidence": 0.5623,
+      "marked_original": null,
+      "issue_title": "Agents Window: terminal sandbox shown Off becomes enabled after Dev Container startup",
+      "candidate_title": "Agents Window: first Dev Container session creates a worktree with New Worktree off",
+      "verdict": "no",
+      "note": "different bugs found in same test pass"
+    },
+    {
+      "issue": 338626,
+      "candidate": 336374,
+      "confidence": 0.9788,
+      "marked_original": null,
+      "issue_title": "Placeholder text used as the only visible label for Search input field: A11y_VisualStudioCode_Labels or Instructions",
+      "candidate_title": "Placeholder text used as the only visible label for Search input field: A11y_VisualStudioCode_Labels or Instructions",
+      "verdict": "yes",
+      "note": "same a11y bug (same SCIM id), refiled"
+    }
+  ],
+  "labeled_by": "Claude (claude-opus-5-5), on request; not human-reviewed"
+}

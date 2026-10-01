@@ -39,8 +39,9 @@ Dashboard (React) reads decisions + corrections
 - [x] Time-ordered replay with an as-of pool
 - [x] Metrics: duplicate precision/recall@k, label accuracy, false-action rate, latency, cost per 1k issues
 - [x] Baselines: Jaccard, TF-IDF with template stripping (embeddings baseline moves to Phase 3)
-- [ ] Hand-label a sample of flagged "false" duplicates to measure true precision (ground truth misses unmarked duplicates)
-- **Done when:** `python -m sift.backtest run --repo fastapi/fastapi --detector jaccard` prints a metrics table.
+- [x] Labeling tooling: seeded sample of flagged "false" duplicates, terminal labeler, corrected precision with 95% CI (`sample` / `label` / `precision`)
+- [x] Label the samples in `labels/` (50 pairs each, React + VS Code) and record true precision in `docs/backtest.md`: TF-IDF @0.5 is ~78% on React, ~31% on VS Code. Labeled by Claude, not yet human-reviewed.
+- **Done when:** `python -m sift.backtest run --repo facebook/react --detector jaccard` prints a metrics table, and true precision is reported from labeled samples.
 
 ### Phase 3 - Duplicate detection (week 2-3)
 - [ ] BGE embeddings (local) + pgvector; measure recall@10 of retrieval stage alone

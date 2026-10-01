@@ -1,0 +1,512 @@
+{
+  "repo": "facebook/react",
+  "detector": "tfidf",
+  "threshold": 0.5,
+  "seed": 0,
+  "flagged": 319,
+  "marked_correct": 5,
+  "wrong_flags": 314,
+  "sample": [
+    {
+      "issue": 20257,
+      "candidate": 20230,
+      "confidence": 0.9723,
+      "marked_original": null,
+      "issue_title": "Bug: react-hook: value of useState doesn't change in function that passes to render props that passes to context ",
+      "candidate_title": "Bug: react-hook: value of useState doesn't change when use with useContext and render props",
+      "verdict": "yes",
+      "note": "same author reposted the same useState/render-props report"
+    },
+    {
+      "issue": 20839,
+      "candidate": 20747,
+      "confidence": 0.5879,
+      "marked_original": null,
+      "issue_title": "Error: \"Commit tree does not contain fiber 13586. This is a bug in React DevTools.\"",
+      "candidate_title": "Error: \"Commit tree does not contain fiber 4293. This is a bug in React DevTools.\"",
+      "verdict": "yes",
+      "note": "same DevTools 4.10.1 'Commit tree does not contain fiber' crash, same stack"
+    },
+    {
+      "issue": 21527,
+      "candidate": 21522,
+      "confidence": 0.7226,
+      "marked_original": null,
+      "issue_title": "[DevTools Error] Cannot remove node \"527\" because no matching node was found in the Store.",
+      "candidate_title": "[DevTools Error] Cannot remove node \"771\" because no matching node was found in the Store.",
+      "verdict": "yes",
+      "note": "same 'Cannot remove node' error, same DevTools version and stack"
+    },
+    {
+      "issue": 21708,
+      "candidate": 20503,
+      "confidence": 0.9359,
+      "marked_original": null,
+      "issue_title": "Some way to fuzz setState timing/usage",
+      "candidate_title": "React needs some way to fuzz setState timing/usage",
+      "verdict": "yes",
+      "note": "identical feature request reposted"
+    },
+    {
+      "issue": 21724,
+      "candidate": 21606,
+      "confidence": 0.5302,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug] Could not inspect element with id \"4\"",
+      "candidate_title": "[DevTools Bug] Could not inspect element with id 2",
+      "verdict": "yes",
+      "note": "same 'Could not inspect element' error, same version and component stack"
+    },
+    {
+      "issue": 21803,
+      "candidate": 21606,
+      "confidence": 0.7489,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug] Could not inspect element with id 192",
+      "candidate_title": "[DevTools Bug] Could not inspect element with id 2",
+      "verdict": "yes",
+      "note": "same 'Could not inspect element' error, same version and component stack"
+    },
+    {
+      "issue": 22269,
+      "candidate": 22241,
+      "confidence": 0.8745,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug] Could not inspect element with id \"28\". Error thrown:Cached data for element \"28\" not found",
+      "candidate_title": "[DevTools Bug] Could not inspect element with id \"219\". Error thrown:Cached data for element \"219\" not found",
+      "verdict": "yes",
+      "note": "same 'Cached data for element not found' error, same version"
+    },
+    {
+      "issue": 22328,
+      "candidate": 22327,
+      "confidence": 0.9353,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug]: Hook parsing fails with fetch error",
+      "candidate_title": "[DevTools Bug]: hook resolution throws fetch failure",
+      "verdict": "yes",
+      "note": "same hook-name fetch failure, identical repro text"
+    },
+    {
+      "issue": 22488,
+      "candidate": 22269,
+      "confidence": 0.7186,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug] Could not inspect element with id \"2\". Error thrown:Cached data for element \"2\" not found",
+      "candidate_title": "[DevTools Bug] Could not inspect element with id \"28\". Error thrown:Cached data for element \"28\" not found",
+      "verdict": "yes",
+      "note": "same 'Cached data for element not found' error, same version"
+    },
+    {
+      "issue": 22505,
+      "candidate": 22504,
+      "confidence": 0.9971,
+      "marked_original": null,
+      "issue_title": "mouseEnterEvent can not trigger in outer dom",
+      "candidate_title": "mouseEnterEvent can not trigger in outer dom",
+      "verdict": "yes",
+      "note": "identical repost"
+    },
+    {
+      "issue": 22908,
+      "candidate": 22907,
+      "confidence": 1.0,
+      "marked_original": null,
+      "issue_title": "Bug: onChange not working with custom elements",
+      "candidate_title": "Bug: onChange not working with custom elements",
+      "verdict": "yes",
+      "note": "identical repost"
+    },
+    {
+      "issue": 22912,
+      "candidate": 22911,
+      "confidence": 1.0,
+      "marked_original": null,
+      "issue_title": "Bug: onChange not working with custom elements",
+      "candidate_title": "Bug: onChange not working with custom elements",
+      "verdict": "yes",
+      "note": "identical repost"
+    },
+    {
+      "issue": 23226,
+      "candidate": 23035,
+      "confidence": 0.7945,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug] Cannot add node \"1\" because a node with that id is already in the Store.",
+      "candidate_title": "[DevTools Bug] Cannot add node \"1\" because a node with that id is already in the Store.",
+      "verdict": "yes",
+      "note": "same 'Cannot add node 1' error in react-devtools-core 4.14.0 (RN debugger)"
+    },
+    {
+      "issue": 24559,
+      "candidate": 23226,
+      "confidence": 0.5861,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug] Cannot add node \"1\" because a node with that id is already in the Store.",
+      "candidate_title": "[DevTools Bug] Cannot add node \"1\" because a node with that id is already in the Store.",
+      "verdict": "yes",
+      "note": "same 'Cannot add node 1' error, same devtools-core version mismatch"
+    },
+    {
+      "issue": 25098,
+      "candidate": 25094,
+      "confidence": 0.761,
+      "marked_original": null,
+      "issue_title": "Bug: inconsistent recursive setState() behavior",
+      "candidate_title": "Bug: inconsistent recursive setState() behavior",
+      "verdict": "yes",
+      "note": "same report; one copy is truncated"
+    },
+    {
+      "issue": 25906,
+      "candidate": 20538,
+      "confidence": 0.9641,
+      "marked_original": null,
+      "issue_title": "i can not use react developer tool",
+      "candidate_title": "React developer tool",
+      "verdict": "unsure",
+      "note": "both bodies empty; can't tell what is broken"
+    },
+    {
+      "issue": 26131,
+      "candidate": 24596,
+      "confidence": 0.7128,
+      "marked_original": null,
+      "issue_title": "Bug: useReducer rendering behaviour in React 18 ",
+      "candidate_title": "Bug: useReducer and same state in React 18",
+      "verdict": "yes",
+      "note": "same useReducer same-state re-render in React 18"
+    },
+    {
+      "issue": 26793,
+      "candidate": 26759,
+      "confidence": 0.6513,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug] Cannot remove node \"226752\" because no matching node was found in the Store.",
+      "candidate_title": "[DevTools Bug] Cannot remove node \"197\" because no matching node was found in the Store.",
+      "verdict": "yes",
+      "note": "same 'Cannot remove node' error, same version and stack"
+    },
+    {
+      "issue": 27006,
+      "candidate": 24433,
+      "confidence": 0.6635,
+      "marked_original": null,
+      "issue_title": "Bug:in.tsx:6 Warning: ReactDOM.render is no longer supported in React 18. Use createRoot instead. Until you switch to the new API, your app will behave as if it's running React 17. Learn more: https://reactjs.org/link/switch-to-createroot printWarning @ react-dom.development.js:86 error @ react-dom.development.js:60 render @ react-dom.development.js:29670 (anonymous) @ main.tsx:6 ",
+      "candidate_title": "Use createRoot instead. Until you switch to the new API, your app will behave as if it's running React 17?",
+      "verdict": "yes",
+      "note": "same ReactDOM.render deprecation warning question"
+    },
+    {
+      "issue": 27976,
+      "candidate": 27895,
+      "confidence": 1.0,
+      "marked_original": null,
+      "issue_title": "Replace \"Donate to Ukraine\" Banner with \"Support Palestine\" in ReactJS",
+      "candidate_title": "Replace \"Donate to Ukraine\" Banner with \"Support Palestine\" in ReactJS",
+      "verdict": "yes",
+      "note": "identical repost"
+    },
+    {
+      "issue": 30886,
+      "candidate": 29672,
+      "confidence": 0.577,
+      "marked_original": null,
+      "issue_title": "Bug: First render doesn't create DOM nodes before next javascript is executed in script",
+      "candidate_title": "Bug: Marker reference change after render doesn't reflect for Safari",
+      "verdict": "no",
+      "note": "async createRoot DOM timing vs Safari SVG marker update"
+    },
+    {
+      "issue": 31086,
+      "candidate": 30607,
+      "confidence": 0.6736,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug] Cannot add node \"20468\" because a node with that id is already in the Store.",
+      "candidate_title": "[DevTools Bug] Cannot add node \"1\" because a node with that id is already in the Store.",
+      "verdict": "yes",
+      "note": "same 'Cannot add node' error, same 5.3.1 stack"
+    },
+    {
+      "issue": 31739,
+      "candidate": 31606,
+      "confidence": 0.97,
+      "marked_original": null,
+      "issue_title": "Cant read props of undefined [*reading \"getStackAddendum\"]",
+      "candidate_title": "Cannot read properties of undefined (reading 'getStackAddendum')",
+      "verdict": "yes",
+      "note": "same getStackAddendum production error with module federation"
+    },
+    {
+      "issue": 31950,
+      "candidate": 31436,
+      "confidence": 0.5193,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug] Cannot remove node \"92\" because no matching node was found in the Store.",
+      "candidate_title": "[DevTools Bug] Cannot remove node \"2546\" because no matching node was found in the Store.",
+      "verdict": "yes",
+      "note": "same 'Cannot remove node' error, same 6.0.1 stack"
+    },
+    {
+      "issue": 32118,
+      "candidate": 31950,
+      "confidence": 0.5434,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug] Cannot add child \"301\" to parent \"155\" because parent node was not found in the Store.",
+      "candidate_title": "[DevTools Bug] Cannot remove node \"92\" because no matching node was found in the Store.",
+      "verdict": "unsure",
+      "note": "different Store errors (add child vs remove node); maybe one desync cause"
+    },
+    {
+      "issue": 32196,
+      "candidate": 31941,
+      "confidence": 0.5866,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug]:  [DevTools Bug] Cannot reorder children for node \"0\" because no matching node was found in the Store.",
+      "candidate_title": "[DevTools Bug] Cannot remove node \"26868\" because no matching node was found in the Store.",
+      "verdict": "unsure",
+      "note": "different Store errors (reorder children vs remove node); maybe one desync cause"
+    },
+    {
+      "issue": 33817,
+      "candidate": 33811,
+      "confidence": 0.9842,
+      "marked_original": null,
+      "issue_title": "Update concurrently from ^7.4.0 to 9.2.0",
+      "candidate_title": "Update concurrently from ^7.4.0 to 9.2.0",
+      "verdict": "yes",
+      "note": "bot: identical dependency-update issue"
+    },
+    {
+      "issue": 33820,
+      "candidate": 33814,
+      "confidence": 0.9919,
+      "marked_original": null,
+      "issue_title": "Update wait-on from ^7.2.0 to 8.0.3",
+      "candidate_title": "Update wait-on from ^7.2.0 to 8.0.3",
+      "verdict": "yes",
+      "note": "bot: identical dependency-update issue"
+    },
+    {
+      "issue": 33837,
+      "candidate": 33825,
+      "confidence": 0.9774,
+      "marked_original": null,
+      "issue_title": "Update @types/node from ^20.2.5 to 24.0.14",
+      "candidate_title": "Update @types/node from ^18.7.18 to 24.0.14",
+      "verdict": "yes",
+      "note": "bot: same @types/node update target"
+    },
+    {
+      "issue": 33846,
+      "candidate": 33818,
+      "confidence": 0.5096,
+      "marked_original": null,
+      "issue_title": "Update chalk from 4 to 5.4.1",
+      "candidate_title": "Update ora from 5.4.1 to 8.2.0",
+      "verdict": "no",
+      "note": "bot: different packages (chalk vs ora)"
+    },
+    {
+      "issue": 33849,
+      "candidate": 33835,
+      "confidence": 0.9862,
+      "marked_original": null,
+      "issue_title": "Update zod from ^3.22.4 to 4.0.5",
+      "candidate_title": "Update zod from ^3.22.4 to 4.0.5",
+      "verdict": "yes",
+      "note": "bot: identical dependency-update issue"
+    },
+    {
+      "issue": 33859,
+      "candidate": 33831,
+      "confidence": 0.9239,
+      "marked_original": null,
+      "issue_title": "Update react from 0.0.0-experimental-4beb1fd8-20241118 to 19.1.0",
+      "candidate_title": "Update react from 0.0.0-experimental-4beb1fd8-20241118 to 19.1.0",
+      "verdict": "yes",
+      "note": "bot: identical dependency-update issue"
+    },
+    {
+      "issue": 33869,
+      "candidate": 33859,
+      "confidence": 0.7917,
+      "marked_original": null,
+      "issue_title": "Update react from ^15.6.1 to 19.1.0",
+      "candidate_title": "Update react from 0.0.0-experimental-4beb1fd8-20241118 to 19.1.0",
+      "verdict": "yes",
+      "note": "bot: same react 19.1.0 update target"
+    },
+    {
+      "issue": 33874,
+      "candidate": 33871,
+      "confidence": 0.6104,
+      "marked_original": null,
+      "issue_title": "Update react-markdown from ^3.2.0 to 10.1.0",
+      "candidate_title": "Update react-scripts from 1.0.11 to 5.0.1",
+      "verdict": "no",
+      "note": "bot: different packages"
+    },
+    {
+      "issue": 33890,
+      "candidate": 33864,
+      "confidence": 0.572,
+      "marked_original": null,
+      "issue_title": "Update react-draggable from ^2.2.6 to 4.5.0",
+      "candidate_title": "Update @typescript-eslint/eslint-plugin from ^7.4.0 to 8.37.0",
+      "verdict": "no",
+      "note": "bot: different packages"
+    },
+    {
+      "issue": 33893,
+      "candidate": 33817,
+      "confidence": 0.9298,
+      "marked_original": null,
+      "issue_title": "Update concurrently from ^5.3.0 to 9.2.0",
+      "candidate_title": "Update concurrently from ^7.4.0 to 9.2.0",
+      "verdict": "yes",
+      "note": "bot: same concurrently 9.2.0 update target"
+    },
+    {
+      "issue": 33898,
+      "candidate": 33867,
+      "confidence": 0.994,
+      "marked_original": null,
+      "issue_title": "Update webpack from 4.44.2 to 5.100.2",
+      "candidate_title": "Update webpack from ^1.14.0 to 5.100.2",
+      "verdict": "yes",
+      "note": "bot: same webpack 5.100.2 update target"
+    },
+    {
+      "issue": 33902,
+      "candidate": 33886,
+      "confidence": 0.5786,
+      "marked_original": null,
+      "issue_title": "Update concurrently from ^7.3.0 to 9.2.0",
+      "candidate_title": "Update react from ^16.1.1 to 19.1.0",
+      "verdict": "no",
+      "note": "bot: different packages"
+    },
+    {
+      "issue": 33909,
+      "candidate": 33882,
+      "confidence": 0.5637,
+      "marked_original": null,
+      "issue_title": "Update @testing-library/jest-dom from ^5.14.1 to 6.6.3",
+      "candidate_title": "Update react-scripts from ^1.0.11 to 5.0.1",
+      "verdict": "no",
+      "note": "bot: different packages"
+    },
+    {
+      "issue": 33912,
+      "candidate": 33838,
+      "confidence": 0.9502,
+      "marked_original": null,
+      "issue_title": "Update babel-jest from ^27.4.2 to 30.0.4",
+      "candidate_title": "Update babel-jest from ^29.0.3 to 30.0.4",
+      "verdict": "yes",
+      "note": "bot: same babel-jest 30.0.4 update target"
+    },
+    {
+      "issue": 33918,
+      "candidate": 33917,
+      "confidence": 0.7138,
+      "marked_original": null,
+      "issue_title": "Update css-minimizer-webpack-plugin from ^3.2.0 to 7.0.2",
+      "candidate_title": "Update css-loader from ^6.5.1 to 7.1.2",
+      "verdict": "no",
+      "note": "bot: different packages"
+    },
+    {
+      "issue": 33925,
+      "candidate": 33903,
+      "confidence": 0.9839,
+      "marked_original": null,
+      "issue_title": "Update nodemon from ^2.0.19 to 3.1.10",
+      "candidate_title": "Update nodemon from ^2.0.19 to 3.1.10",
+      "verdict": "yes",
+      "note": "bot: identical dependency-update issue"
+    },
+    {
+      "issue": 33934,
+      "candidate": 33904,
+      "confidence": 0.9825,
+      "marked_original": null,
+      "issue_title": "Update undici from ^5.20.0 to 7.11.0",
+      "candidate_title": "Update undici from ^5.20.0 to 7.11.0",
+      "verdict": "yes",
+      "note": "bot: identical dependency-update issue"
+    },
+    {
+      "issue": 34128,
+      "candidate": 33738,
+      "confidence": 0.679,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug] Cannot add node \"1\" because a node with that id is already in the Store.",
+      "candidate_title": "[DevTools Bug] Cannot remove node \"810\" because no matching node was found in the Store.",
+      "verdict": "unsure",
+      "note": "different Store errors (add node vs remove node), same version"
+    },
+    {
+      "issue": 34333,
+      "candidate": 34332,
+      "confidence": 0.7731,
+      "marked_original": null,
+      "issue_title": "Implement error boundary improvements",
+      "candidate_title": "Add performance monitoring hooks",
+      "verdict": "no",
+      "note": "agent spam: different tasks"
+    },
+    {
+      "issue": 34686,
+      "candidate": 31481,
+      "confidence": 0.6054,
+      "marked_original": null,
+      "issue_title": "Bug: eslint-plugin-react-hooks installes unmaintained @babel/plugin-proposal-private-methods",
+      "candidate_title": "[Compiler Bug]: `eslint-plugin-react-compiler`: npm warn deprecated `@babel/plugin-proposal-private-methods`",
+      "verdict": "unsure",
+      "note": "same deprecated babel plugin warning, different eslint plugin packages"
+    },
+    {
+      "issue": 35729,
+      "candidate": 31158,
+      "confidence": 0.9187,
+      "marked_original": null,
+      "issue_title": "Bug: [eslint-plugin-react] Compatibility issue with ESLint 10.x.x",
+      "candidate_title": "Bug: [eslint-plugin-react-hooks] Compatibility issue with ESLint 9.x.x",
+      "verdict": "no",
+      "note": "different plugins and ESLint versions"
+    },
+    {
+      "issue": 36934,
+      "candidate": 36933,
+      "confidence": 0.9976,
+      "marked_original": null,
+      "issue_title": "experimental_taintUniqueValue throws RangeError for large binary values",
+      "candidate_title": "experimental_taintUniqueValue throws RangeError for large binary values",
+      "verdict": "yes",
+      "note": "identical repost"
+    },
+    {
+      "issue": 37264,
+      "candidate": 36375,
+      "confidence": 0.7037,
+      "marked_original": null,
+      "issue_title": "[DevTools Bug] Cannot remove node \"3469\" because no matching node was found in the Store.",
+      "candidate_title": "[DevTools Bug] Cannot remove node \"658\" because no matching node was found in the Store.",
+      "verdict": "yes",
+      "note": "same 'Cannot remove node' error, same fusebox version and stack"
+    },
+    {
+      "issue": 37441,
+      "candidate": 37427,
+      "confidence": 0.5019,
+      "marked_original": null,
+      "issue_title": "Child reconciliation does not close iterators when a yielded child throws",
+      "candidate_title": "React.Children does not close iterators when mapping throws",
+      "verdict": "no",
+      "note": "related iterator-close bugs in different code paths (reconciler vs Children.map)"
+    }
+  ],
+  "labeled_by": "Claude (claude-opus-5-5), on request; not human-reviewed"
+}

@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 from email.message import Message
 from pathlib import Path
 
-from sift.backtest import dataset
+from sift.backtest import dataset, labeling
 from sift.backtest.detectors import (
     Boilerplate,
     JaccardDetector,
@@ -23,7 +23,7 @@ from sift.backtest.loader import (
     next_link,
     row_from_api,
 )
-from sift.backtest.replay import duplicate_metrics, label_metrics, replay, summary
+from sift.backtest.replay import DupOutcome, ReplayResult, duplicate_metrics, label_metrics, replay, summary
 from sift.backtest.report import format_report
 from sift.jev.mock import MockJev
 from sift.models import Issue
@@ -253,6 +253,90 @@ class TestReplay(unittest.IsolatedAsyncioTestCase):
         text = format_report("o/r", s)
         self.assertIn("precision", text)
         self.assertIn("mock-jev", text)
+
+
+class TestLabeling(unittest.TestCase):
+    def result(self):
+        r = ReplayResult(detector="tfidf", k=10)
+        r.dups = [
+            DupOutcome(10, target=1, best=1, confidence=0.9, target_in_candidates=True),   # correct
+            DupOutcome(11, target=None, best=2, confidence=0.8, target_in_candidates=False),  # wrong
+            DupOutcome(12, target=None, best=3, confidence=0.6, target_in_candidates=False),  # wrong
+            DupOutcome(13, target=4, best=5, confidence=0.7, target_in_candidates=False),     # wrong original
+            DupOutcome(14, target=None, best=6, confidence=0.3, target_in_candidates=False),  # below threshold
+            DupOutcome(15, target=None, best=None, confidence=0.0, target_in_candidates=False),
+        ]
+        return r
+
+    def records(self):
+        return [rec(n, f"title {n}", f"body {n}") for n in range(1, 16)]
+
+    def test_sample_only_wrong_flags_above_threshold_and_seeded(self):
+        labels = labeling.build_sample("o/r", self.records(), self.result(), threshold=0.5, n=10)
+        self.assertEqual((labels["flagged"], labels["marked_correct"], labels["wrong_flags"]), (4, 1, 3))
+        self.assertEqual([row["issue"] for row in labels["sample"]], [11, 12, 13])
+        self.assertEqual(labels["sample"][2]["marked_original"], 4)
+        self.assertEqual(labels["sample"][0]["candidate_title"], "title 2")
+        self.assertTrue(all(row["verdict"] is None for row in labels["sample"]))
+
+        a = labeling.build_sample("o/r", self.records(), self.result(), 0.5, n=2, seed=7)
+        b = labeling.build_sample("o/r", self.records(), self.result(), 0.5, n=2, seed=7)
+        self.assertEqual(a, b)
+        self.assertEqual(len(a["sample"]), 2)
+
+    def test_wilson(self):
+        lo, hi = labeling.wilson(5, 10)
+        self.assertAlmostEqual(lo, 0.2366, places=3)
+        self.assertAlmostEqual(hi, 0.7634, places=3)
+        self.assertEqual(labeling.wilson(0, 0), (0.0, 1.0))
+        self.assertEqual(labeling.wilson(10, 10)[1], 1.0)
+
+    def test_estimate_corrects_precision_with_labeled_share(self):
+        labels = {
+            "flagged": 100, "marked_correct": 10, "wrong_flags": 90,
+            "sample": [{"verdict": v} for v in ["yes"] * 3 + ["no"] * 6 + ["unsure", None]],
+        }
+        e = labeling.estimate(labels)
+        self.assertEqual((e["labeled"], e["unsure"], e["unlabeled"]), (9, 1, 1))
+        self.assertAlmostEqual(e["measured_precision"], 0.10)
+        self.assertAlmostEqual(e["estimated_precision"], (10 + 90 / 3) / 100)
+        lo, hi = e["estimated_precision_95ci"]
+        self.assertLess(lo, e["estimated_precision"])
+        self.assertGreater(hi, e["estimated_precision"])
+
+    def test_estimate_without_verdicts(self):
+        e = labeling.estimate({"flagged": 4, "marked_correct": 1, "wrong_flags": 3, "sample": [{"verdict": None}]})
+        self.assertIsNone(e["estimated_precision"])
+        self.assertAlmostEqual(e["measured_precision"], 0.25)
+
+    def test_interactive_labeling_saves_and_resumes(self):
+        labels = labeling.build_sample("o/r", self.records(), self.result(), 0.5, n=10)
+        issues = {r.issue.number: r.issue for r in self.records()}
+        saves, shown = [], []
+        answers = iter(["maybe", "y", "s", "q"])  # invalid answer is asked again
+        n = labeling.label_interactively(
+            labels, issues, lambda l: saves.append([row["verdict"] for row in l["sample"]]),
+            ask=lambda _: next(answers), out=shown.append,
+        )
+        self.assertEqual(n, 1)
+        self.assertEqual(saves, [["yes", None, None]])
+        self.assertTrue(any("https://github.com/o/r/issues/2" in line for line in shown))
+
+        answers = iter(["n", "u"])  # resumes with the two unlabeled pairs
+        labeling.label_interactively(labels, issues, lambda l: None, ask=lambda _: next(answers), out=lambda _: None)
+        self.assertEqual([row["verdict"] for row in labels["sample"]], ["yes", "no", "unsure"])
+
+    def test_save_load_roundtrip(self):
+        labels = labeling.build_sample("o/r", self.records(), self.result(), 0.5, n=10)
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "x.json"
+            labeling.save(labels, path)
+            self.assertEqual(labeling.load(path), labels)
+
+    def test_excerpt_strips_template_comments(self):
+        issue = rec(1, "t", "<!-- instructions -->\n\n\nreal text\n\n\nmore").issue
+        self.assertEqual(labeling.excerpt(issue), "real text\nmore")
+        self.assertTrue(labeling.excerpt(rec(1, "t", "x" * 900).issue).endswith("[...]"))
 
 
 if __name__ == "__main__":

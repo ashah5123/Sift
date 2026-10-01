@@ -11,6 +11,14 @@ python -m sift.backtest run     --repo facebook/react --detector tfidf
 python -m sift.backtest compare                                      # markdown table of results/
 ```
 
+Hand-labeling, to measure true precision (see below):
+
+```bash
+python -m sift.backtest sample    --repo facebook/react --detector tfidf   # sample to labels/ (committed)
+python -m sift.backtest label     --repo facebook/react --detector tfidf   # verdicts in the terminal, resumable
+python -m sift.backtest precision --repo facebook/react --detector tfidf   # corrected estimate + 95% CI
+```
+
 `fetch` uses `GITHUB_TOKEN` or your `gh` login. Detectors: `jaccard`, `tfidf`, `mock-jev`.
 
 ## Ground truth
@@ -59,6 +67,30 @@ React: 5,000 most recent issues (Nov 2020 – Sep 2026), 43 scorable duplicates.
 2. **Issue templates break naive similarity.** Unfilled bug-report templates look identical to each other. Jaccard flags 24% of React issues at 0.5. Stripping template lines learned from earlier issues and weighting rare words cut that to 6.4%.
 3. **Precision here is a lower bound.** Only about 1% of issues are marked duplicates. Many flagged "false" matches are real, unmarked duplicates, e.g. React DevTools crash reports with identical error text. A hand-labeled sample is needed for a true precision number.
 4. **Labels need per-repo vocabulary.** The keyword mock labels 80% correctly on React when it answers, but only answers 34% of the time. On VS Code, label names rarely appear in issue text. Predicting the most frequent label is a strong baseline (57% / 38%) that any model must beat.
+
+### True precision from hand labels
+
+Ground truth only knows duplicates maintainers marked, so precision above is a lower bound. To correct it, `sample` takes a seeded random sample of 50 flags at ≥ 0.5 that ground truth calls wrong. `label` shows each pair with links and asks whether they are the same bug. `precision` then estimates:
+
+```
+true precision ≈ (flags matching ground truth + share judged real × flags not matching) / all flags
+```
+
+with a 95% Wilson interval on the share. "Unsure" verdicts are left out and reported. Samples and verdicts live in `labels/` and are committed, so the number can be checked.
+
+| Repo | Detector | Flags @0.5 | Match ground truth | Sampled | Real / not / unsure | Estimated true precision @0.5 |
+|---|---|---|---|---|---|---|
+| facebook/react | tfidf | 319 | 5 (1.6%) | 50 | 35 / 10 / 5 | **78%** (95% CI 64–88%) |
+| microsoft/vscode | tfidf | 132 | 1 (0.8%) | 50 | 15 / 34 / 1 | **31%** (95% CI 20–45%) |
+
+**Who labeled:** these verdicts were made by Claude (claude-opus-5-5), not by a person, and have not been human-reviewed yet. Each pair has a one-line reason in `labels/*.json`. Treat the numbers as provisional until a person confirms them. Re-running `label` after clearing verdicts, or editing the JSON, replaces them.
+
+What the real duplicates are:
+
+- **React (35):** 12 DevTools crash reports with the same error and stack (`Cannot remove node`, `Could not inspect element`, ...). 11 copies of the same bot-filed dependency-update issue. 10 reposts of the same report, usually by the same author. 2 other matching bug reports. Most are easy, near-exact text matches.
+- **VS Code (15):** 11 reposts by the same reporter, plus 4 independent reports of the same bug (a CVE advisory, an MCP race, an installer error, an a11y bug). The 34 misses are mostly unrelated issues that share VS Code's long system-info template, plus empty template submissions.
+
+So ground truth badly undercounts duplicates, but the easy duplicates (reposts, bot spam, identical crash signatures) inflate the estimate. The 0.5 threshold is still far too loose to act on, especially on VS Code. The judge in Phase 3 has to beat these numbers on the same samples.
 
 ### Bugs the backtest caught
 
