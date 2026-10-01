@@ -44,7 +44,8 @@ Dashboard (React) reads decisions + corrections
 - **Done when:** `python -m sift.backtest run --repo facebook/react --detector jaccard` prints a metrics table, and true precision is reported from labeled samples.
 
 ### Phase 3 - Duplicate detection (week 2-3)
-- [ ] BGE embeddings (local) + pgvector; measure recall@10 of retrieval stage alone
+- [x] BGE embeddings (local); measure recall@10 of retrieval stage alone: 67% React (ties TF-IDF), 86% VS Code (vs 38%). Hybrid fusion didn't help.
+- [ ] Embed issues in the worker and search with pgvector (`issues.embedding`)
 - [ ] Jev pairwise judgment over top-10 in parallel; measure end-to-end precision
 - [ ] Post "looks like #N" comment
 

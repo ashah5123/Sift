@@ -6,14 +6,16 @@ Status: early development. See [PLAN.md](PLAN.md) for the roadmap.
 
 ## Backtest results
 
-Replayed in time order over real history from React (5,000 issues) and VS Code (4,000 issues), with maintainers' own duplicate markings as ground truth. Local baselines only so far; Jev comes in Phase 3.
+Replayed in time order over real history from React (5,000 issues) and VS Code (4,000 issues), with maintainers' own duplicate markings as ground truth. Local retrieval only so far; Jev judging comes next. Embedding similarity is not a confidence, so embeddings have no false-action rate: they only pick candidates.
 
 | Repo | Detector | Original in top-10 | False-action rate @0.5 | p50 latency |
 |---|---|---|---|---|
 | facebook/react | word overlap (Jaccard) | 27.9% | 24.2% | 1.5 ms |
 | facebook/react | TF-IDF + template stripping | **67.4%** | **6.4%** | 0.8 ms |
 | microsoft/vscode | word overlap (Jaccard) | 24.0% | 21.2% | 1.5 ms |
-| microsoft/vscode | TF-IDF + template stripping | **38.0%** | **3.6%** | 1.2 ms |
+| microsoft/vscode | TF-IDF + template stripping | 38.0% | **3.6%** | 1.2 ms |
+| facebook/react | BGE embeddings (local) | 67.4% | - | 14.5 ms |
+| microsoft/vscode | BGE embeddings (local) | **86.0%** | - | 13.4 ms |
 
 Similarity search finds the right original often, but the single most similar issue is rarely it. That is why Sift retrieves candidates locally and lets a model judge them. Method, caveats and full numbers: [docs/backtest.md](docs/backtest.md).
 

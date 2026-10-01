@@ -1,0 +1,89 @@
+{
+  "repo": "facebook/react",
+  "detector": "hybrid",
+  "evaluated": 5000,
+  "unverifiable_duplicates": 119,
+  "duplicates": {
+    "scored_issues": 4881,
+    "known_duplicates": 43,
+    "recall_at_10": 0.7209302325581395,
+    "sweep": [
+      {
+        "threshold": 0.1,
+        "flagged": 3192,
+        "precision": 0.004699248120300752,
+        "recall": 0.3488372093023256,
+        "false_action_rate": 0.6508912108174555
+      },
+      {
+        "threshold": 0.2,
+        "flagged": 929,
+        "precision": 0.010764262648008612,
+        "recall": 0.23255813953488372,
+        "false_action_rate": 0.18828108994058596
+      },
+      {
+        "threshold": 0.3,
+        "flagged": 501,
+        "precision": 0.015968063872255488,
+        "recall": 0.18604651162790697,
+        "false_action_rate": 0.1010038926449498
+      },
+      {
+        "threshold": 0.4,
+        "flagged": 335,
+        "precision": 0.011940298507462687,
+        "recall": 0.09302325581395349,
+        "false_action_rate": 0.0678139725466093
+      },
+      {
+        "threshold": 0.5,
+        "flagged": 261,
+        "precision": 0.01532567049808429,
+        "recall": 0.09302325581395349,
+        "false_action_rate": 0.05265314484736734
+      },
+      {
+        "threshold": 0.6,
+        "flagged": 209,
+        "precision": 0.019138755980861243,
+        "recall": 0.09302325581395349,
+        "false_action_rate": 0.04199959024790002
+      },
+      {
+        "threshold": 0.7,
+        "flagged": 170,
+        "precision": 0.011764705882352941,
+        "recall": 0.046511627906976744,
+        "false_action_rate": 0.034419176398279044
+      },
+      {
+        "threshold": 0.8,
+        "flagged": 131,
+        "precision": 0.015267175572519083,
+        "recall": 0.046511627906976744,
+        "false_action_rate": 0.02642901044867855
+      },
+      {
+        "threshold": 0.9,
+        "flagged": 108,
+        "precision": 0.009259259259259259,
+        "recall": 0.023255813953488372,
+        "false_action_rate": 0.021921737348903913
+      }
+    ]
+  },
+  "labels": {
+    "labeled_issues": 1765,
+    "coverage": 0.3388101983002833,
+    "accuracy_when_answered": 0.7993311036789298,
+    "accuracy_overall": 0.2708215297450425,
+    "most_frequent_baseline": 0.5648725212464589
+  },
+  "latency_ms": {
+    "p50": 15.90424997266382,
+    "p95": 26.325999991968274
+  },
+  "tokens_per_issue": 0.0,
+  "est_cost_per_1k_issues_usd": 0.0
+}

@@ -7,11 +7,13 @@
   python -m sift.backtest sample    --repo facebook/react --detector tfidf
   python -m sift.backtest label     --repo facebook/react --detector tfidf
   python -m sift.backtest precision --repo facebook/react --detector tfidf
+  python -m sift.backtest judge     --repo facebook/react --backend local
 """
 import argparse
 import asyncio
 import json
 import sys
+import time
 from collections import Counter
 from pathlib import Path
 
@@ -144,6 +146,36 @@ def cmd_precision(args: argparse.Namespace) -> None:
               f"(95% CI {pct(lo)} - {pct(hi)}, n={e['labeled']})")
 
 
+def cmd_judge(args: argparse.Namespace) -> None:
+    """Re-judge the labeled pairs with a Jev backend and compare with the labels."""
+    from sift.jev import get_jev
+
+    _, labels = _load_labels(args)
+    issues = {r.issue.number: r.issue for r in _load(args.repo)}
+    jev = get_jev(args.backend)
+    t0 = time.perf_counter()
+    probs = asyncio.run(labeling.judge_sample(labels, issues, jev, log=log))
+    elapsed = time.perf_counter() - t0
+    pct = lambda v: "-" if v is None else f"{v * 100:.1f}%"
+    print(f"{args.repo}  pairs flagged by {labels['detector']} @{labels['threshold']}, "
+          f"judged by {args.backend} ({elapsed / len(probs):.2f} s/pair)")
+    rows = [labeling.judge_agreement(labels, probs, t) for t in (0.5, 0.7, 0.9)]
+    print("  threshold  judge-yes  precision  recall  accuracy")
+    for a in rows:
+        print(f"  {a['threshold']:>9.1f}  {a['judge_yes']:>9}  {pct(a['precision']):>9}  "
+              f"{pct(a['recall']):>6}  {pct(a['accuracy']):>8}")
+    print(f"  ({rows[0]['pairs']} pairs with a yes/no label, {rows[0]['real_duplicates']} real duplicates)")
+    RESULTS_DIR.mkdir(exist_ok=True)
+    out = RESULTS_DIR / f"judge__{args.repo.replace('/', '__')}__{args.detector}__{args.backend}.json"
+    out.write_text(json.dumps({
+        "repo": args.repo, "backend": args.backend, "labeled_by": labels.get("labeled_by"),
+        "seconds_per_pair": elapsed / len(probs), "agreement": rows,
+        "pairs": [{"issue": r["issue"], "candidate": r["candidate"], "verdict": r["verdict"], "p_yes": round(p, 4)}
+                  for r, p in zip(labels["sample"], probs)],
+    }, indent=2) + "\n")
+    log(f"Saved {out}")
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="python -m sift.backtest")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -187,6 +219,12 @@ def main(argv: list[str] | None = None) -> None:
     precision.add_argument("--repo", required=True)
     precision.add_argument("--detector", choices=sorted(DETECTORS), default="tfidf")
     precision.set_defaults(func=cmd_precision)
+
+    judge = sub.add_parser("judge", help="re-judge labeled pairs with a Jev backend")
+    judge.add_argument("--repo", required=True)
+    judge.add_argument("--detector", choices=sorted(DETECTORS), default="tfidf", help="whose labeled sample")
+    judge.add_argument("--backend", default="local", help="mock | local")
+    judge.set_defaults(func=cmd_judge)
 
     args = parser.parse_args(argv)
     args.func(args)

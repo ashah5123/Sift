@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from sift.backtest.dataset import Record
+from sift.jev.base import JevClient
 from sift.backtest.replay import ReplayResult
 from sift.models import Issue
 
@@ -148,3 +149,34 @@ def label_interactively(
         save_fn(labels)
         answered += 1
     return answered
+
+
+async def judge_sample(
+    labels: dict[str, Any], issues: dict[int, Issue], jev: JevClient, log: Callable[[str], None] = print
+) -> list[float]:
+    """P(same issue) from `jev` for every sampled pair, in sample order."""
+    probs = []
+    for i, row in enumerate(labels["sample"], 1):
+        d = await jev.same_issue(issues[row["issue"]], issues[row["candidate"]])
+        probs.append(d.confidence if d.answer == "yes" else 1.0 - d.confidence)
+        if i % 10 == 0:
+            log(f"  {i}/{len(labels['sample'])} pairs judged")
+    return probs
+
+
+def judge_agreement(labels: dict[str, Any], probs: list[float], threshold: float = 0.5) -> dict[str, Any]:
+    """How a judge's yes/no at `threshold` agrees with the labels ("unsure" left out)."""
+    pairs = [(p, row["verdict"] == "yes") for p, row in zip(probs, labels["sample"])
+             if row["verdict"] in ("yes", "no")]
+    said_yes = [real for p, real in pairs if p >= threshold]
+    real = sum(r for _, r in pairs)
+    hits = sum(said_yes)
+    return {
+        "threshold": threshold,
+        "pairs": len(pairs),
+        "real_duplicates": real,
+        "judge_yes": len(said_yes),
+        "precision": hits / len(said_yes) if said_yes else None,
+        "recall": hits / real if real else None,
+        "accuracy": sum((p >= threshold) == r for p, r in pairs) / len(pairs) if pairs else None,
+    }

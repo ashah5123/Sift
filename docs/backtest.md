@@ -19,7 +19,7 @@ python -m sift.backtest label     --repo facebook/react --detector tfidf   # ver
 python -m sift.backtest precision --repo facebook/react --detector tfidf   # corrected estimate + 95% CI
 ```
 
-`fetch` uses `GITHUB_TOKEN` or your `gh` login. Detectors: `jaccard`, `tfidf`, `mock-jev`.
+`fetch` uses `GITHUB_TOKEN` or your `gh` login. Detectors: `jaccard`, `tfidf`, `embed`, `hybrid`, `mock-jev`. `embed` and `hybrid` need `pip install -e '.[embeddings]'` (downloads BGE small, ~130 MB, on first run).
 
 ## Ground truth
 
@@ -67,6 +67,26 @@ React: 5,000 most recent issues (Nov 2020 – Sep 2026), 43 scorable duplicates.
 2. **Issue templates break naive similarity.** Unfilled bug-report templates look identical to each other. Jaccard flags 24% of React issues at 0.5. Stripping template lines learned from earlier issues and weighting rare words cut that to 6.4%.
 3. **Precision here is a lower bound.** Only about 1% of issues are marked duplicates. Many flagged "false" matches are real, unmarked duplicates, e.g. React DevTools crash reports with identical error text. A hand-labeled sample is needed for a true precision number.
 4. **Labels need per-repo vocabulary.** The keyword mock labels 80% correctly on React when it answers, but only answers 34% of the time. On VS Code, label names rarely appear in issue text. Predicting the most frequent label is a strong baseline (57% / 38%) that any model must beat.
+
+## Retrieval with embeddings (Phase 3)
+
+`embed` ranks earlier issues by cosine similarity of [BGE small](https://huggingface.co/BAAI/bge-small-en-v1.5) embeddings (384 dimensions, run locally). Template lines learned from earlier issues are stripped, as for TF-IDF, and so are collapsed `<details>` blocks (VS Code's system-info table) and HTML comments. Left in, they fill the model's 512-token window. `hybrid` merges the TF-IDF and embedding top-10 lists by reciprocal rank fusion.
+
+| Repo | Detector | Original in top-10 | 95% CI | p50 latency |
+|---|---|---|---|---|
+| facebook/react | tfidf | 67.4% (29/43) | 52–79% | 0.8 ms |
+| facebook/react | embed | 67.4% (29/43) | 52–79% | 14.5 ms |
+| facebook/react | hybrid | 72.1% (31/43) | 57–83% | 15.9 ms |
+| microsoft/vscode | tfidf | 38.0% (19/50) | 26–52% | 1.2 ms |
+| microsoft/vscode | embed | **86.0% (43/50)** | 74–93% | 13.4 ms |
+| microsoft/vscode | hybrid | 74.0% (37/50) | 60–84% | 14.3 ms |
+
+Latency is on an Apple M3 and includes embedding the new issue.
+
+1. **Embeddings are the retrieval stage for Phase 3.** On VS Code they find the original for 86% of duplicates, against 38% for TF-IDF. Stripping `<details>` blocks from TF-IDF's input as well only lifts it to 54% (27/50), so most of the gain comes from the model, not from cleaner input. On React the two tie.
+2. **Hybrid fusion didn't help.** It ties embeddings on React and is worse on VS Code: merging two top-10 lists lets TF-IDF's weaker picks push true originals out. Fusing deeper lists might fix this, but with only 43 and 50 known duplicates, tuning it on this data would overfit. Revisit with more labeled duplicates.
+3. **Embedding similarity is not a confidence.** Cosine between any two issues is high, so `embed` flags 91–97% of issues at 0.5. Retrieval only picks candidates; the judge (Jev) decides.
+4. Samples are small. React's differences are within the confidence intervals; VS Code's gap is not.
 
 ### True precision from hand labels
 

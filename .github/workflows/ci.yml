@@ -40,7 +40,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
       - name: Install
-        run: pip install -e .
+        run: pip install -e . numpy  # numpy runs the embedding index tests without the model
       - name: Compile check
         run: python -m compileall -q sift tests
       - name: Tests

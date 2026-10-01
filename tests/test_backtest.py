@@ -10,6 +10,9 @@ from pathlib import Path
 from sift.backtest import dataset, labeling
 from sift.backtest.detectors import (
     Boilerplate,
+    EmbeddingDetector,
+    EmbeddingIndex,
+    HybridDetector,
     JaccardDetector,
     JevDetector,
     TfIdfDetector,
@@ -26,7 +29,10 @@ from sift.backtest.loader import (
 from sift.backtest.replay import DupOutcome, ReplayResult, duplicate_metrics, label_metrics, replay, summary
 from sift.backtest.report import format_report
 from sift.jev.mock import MockJev
+from sift.embeddings import strip_attachments
 from sift.models import Issue
+from sift.similarity import tokens
+from tests.helpers import has
 
 T0 = datetime(2024, 1, 1, tzinfo=timezone.utc)
 
@@ -176,6 +182,114 @@ class TestTfIdf(unittest.TestCase):
         self.assertEqual(top[0][0].number, 1)
 
 
+class FakeEmbedder:
+    """Hashed bag of words, normalized: similar wording gives similar vectors."""
+
+    DIM = 64
+
+    def __init__(self):
+        self.calls = 0
+
+    def encode(self, texts):
+        import numpy as np
+
+        self.calls += len(texts)
+        out = np.zeros((len(texts), self.DIM), dtype=np.float32)
+        for row, text in enumerate(texts):
+            for tok in tokens(text):
+                out[row, sum(map(ord, tok)) % self.DIM] += 1.0
+            norm = np.linalg.norm(out[row])
+            if norm:
+                out[row] /= norm
+        return out
+
+
+class TestStripAttachments(unittest.TestCase):
+    def test_details_and_comments_removed(self):
+        body = "real text\n<details><summary>System Info</summary>\n|CPU|M2|\n</details>\n<!-- hint -->tail"
+        cleaned = strip_attachments(body)
+        self.assertNotIn("System Info", cleaned)
+        self.assertNotIn("hint", cleaned)
+        self.assertIn("real text", cleaned)
+        self.assertIn("tail", cleaned)
+
+
+@unittest.skipUnless(has("numpy"), "numpy not installed")
+class TestEmbeddingIndex(unittest.TestCase):
+    def test_ranks_by_cosine_and_embeds_each_issue_once(self):
+        emb = FakeEmbedder()
+        index = EmbeddingIndex(emb)
+        first = rec(1, "websocket disconnects under load", "uvicorn websocket timeout under heavy load").issue
+        index.search(first, 5)
+        index.add(first)
+        second = rec(2, "docs typo in tutorial", "tutorial page spelling mistake").issue
+        index.search(second, 5)
+        index.add(second)
+        self.assertEqual(emb.calls, 2)  # query vector reused on add
+
+        results = index.search(rec(3, "websocket timeout under load", "disconnects with heavy load").issue, 5)
+        self.assertEqual([c.number for c, _ in results][0], 1)
+        self.assertGreater(results[0][1], results[1][1])
+        self.assertTrue(all(0.0 <= s <= 1.0 for _, s in results))
+
+    def test_empty_template_issue_is_not_indexed_or_queried(self):
+        index = EmbeddingIndex(FakeEmbedder())
+        index.add(rec(1, "Bug:", "<!-- template -->").issue)
+        self.assertEqual(len(index), 0)
+        index.add(rec(2, "Websocket reconnect loop", "reconnect loop after server restart").issue)
+        self.assertEqual(index.search(rec(3, "Bug:", "").issue, 5), [])
+
+    def test_grows_past_initial_capacity(self):
+        index = EmbeddingIndex(FakeEmbedder())
+        for n in range(1, 1100):
+            index.add(rec(n, f"alpha{n} beta{n} gamma{n}", f"delta{n} words here").issue)
+        self.assertEqual(len(index), 1099)
+        self.assertEqual(len(index.search(rec(2000, "alpha5 beta5 gamma5", "delta5").issue, 10)), 10)
+
+
+@unittest.skipUnless(has("numpy"), "numpy not installed")
+class TestEmbeddingReplay(unittest.IsolatedAsyncioTestCase):
+    def records(self):
+        return [
+            rec(1, "Crash when uploading large files", "uploading a 2GB file crashes the server"),
+            rec(2, "Add dark mode to docs site", "docs site needs a dark theme"),
+            rec(3, "Server crashes uploading large files", "crashes when uploading a 2GB file", dup_of=1),
+            rec(4, "Unrelated feature request", "support yaml config files"),
+        ]
+
+    async def test_embed_detector_finds_duplicate(self):
+        result = await replay(self.records(), EmbeddingDetector(FakeEmbedder()))
+        by_number = {o.number: o for o in result.dups}
+        self.assertEqual(by_number[3].best, 1)
+        self.assertTrue(by_number[3].target_in_candidates)
+
+    async def test_hybrid_fuses_both_lists_and_keeps_lexical_score(self):
+        det = HybridDetector(FakeEmbedder())
+        for r in self.records()[:2]:
+            det.add(r.issue)
+        query = self.records()[2].issue
+        candidates = await det.candidates(query, 10)
+        self.assertEqual(candidates[0][0].number, 1)
+        lexical = dict((c.number, s) for c, s in det.lexical.search(query, 10))
+        for c, score in candidates:
+            self.assertEqual(score, lexical.get(c.number, 0.0))
+
+    async def test_no_future_leakage(self):
+        class Spy(EmbeddingDetector):
+            seen = []
+
+            async def candidates(self, issue, k):
+                self.seen.append((issue.number, len(self.index), issue.labels))
+                return await super().candidates(issue, k)
+
+        spy = Spy(FakeEmbedder())
+        result = await replay(self.records(), spy)
+        # Issue n is queried with exactly the n-1 earlier issues indexed, labels hidden.
+        self.assertEqual([(n, size) for n, size, _ in spy.seen], [(1, 0), (2, 1), (3, 2), (4, 3)])
+        self.assertTrue(all(labels == () for _, _, labels in spy.seen))
+        self.assertEqual(len(result.dups), 4)
+
+
 class SpyDetector(JaccardDetector):
     """Records the pool size at each query to prove no future leakage."""
 
@@ -253,6 +367,16 @@ class TestReplay(unittest.IsolatedAsyncioTestCase):
         text = format_report("o/r", s)
         self.assertIn("precision", text)
         self.assertIn("mock-jev", text)
+
+
+class TestJudgeAgreement(unittest.TestCase):
+    def test_agreement_skips_unsure_and_counts_at_threshold(self):
+        labels = {"sample": [{"verdict": v} for v in ["yes", "yes", "no", "no", "unsure"]]}
+        a = labeling.judge_agreement(labels, [0.9, 0.4, 0.6, 0.1, 0.99], threshold=0.5)
+        self.assertEqual((a["pairs"], a["real_duplicates"], a["judge_yes"]), (4, 2, 2))
+        self.assertEqual(a["precision"], 0.5)
+        self.assertEqual(a["recall"], 0.5)
+        self.assertEqual(a["accuracy"], 0.5)
 
 
 class TestLabeling(unittest.TestCase):
